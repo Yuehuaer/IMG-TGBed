@@ -192,12 +192,63 @@
       max-width: 100%;
       max-height: 70vh;
       background: #000;
+      border-radius: 8px;
+    }
+
+    .video-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .video-error {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .video-error i {
+      font-size: 4em;
+      color: #ddd;
+      margin-bottom: 16px;
     }
 
     /* 音频预览 */
     .preview-audio-container {
       text-align: center;
       padding: 40px;
+      width: 100%;
+    }
+
+    .audio-visualizer {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 32px rgba(138, 75, 255, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .audio-visualizer.playing {
+      animation: pulse 0.8s ease-in-out infinite;
+    }
+
+    .audio-visualizer i {
+      font-size: 3em;
+      color: white;
     }
 
     .audio-icon {
@@ -209,6 +260,7 @@
     .preview-audio {
       width: 100%;
       max-width: 500px;
+      margin-top: 20px;
     }
 
     /* PDF 预览 */
@@ -722,22 +774,53 @@
              @error="onLoadError">
 
         <!-- 视频预览 -->
-        <video v-else-if="previewType === 'video' && !loading" 
-               :src="fileUrl" 
-               class="preview-video" 
-               controls
-               @loadeddata="loading = false"
-               @error="onLoadError">
-        </video>
+        <div v-else-if="previewType === 'video'" class="video-container">
+          <video v-if="!videoError"
+                 ref="videoPlayer"
+                 :src="fileUrl" 
+                 class="preview-video" 
+                 controls
+                 playsinline
+                 preload="metadata"
+                 @loadedmetadata="onVideoLoaded"
+                 @canplay="onVideoReady"
+                 @error="onVideoError">
+            您的浏览器不支持视频播放
+          </video>
+          <div v-else class="video-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>视频加载失败</h3>
+            <p style="margin: 12px 0; color: #999;">该视频格式可能不被浏览器支持</p>
+            <button class="btn btn-primary" @click="downloadFile">
+              <i class="fas fa-download"></i> 下载视频
+            </button>
+          </div>
+        </div>
 
         <!-- 音频预览 -->
-        <div v-else-if="previewType === 'audio' && !loading" class="preview-audio-container">
-          <i class="fas fa-music audio-icon"></i>
-          <h3 style="margin-bottom: 20px; color: #333;">{{ fileName }}</h3>
-          <audio :src="fileUrl" class="preview-audio" controls autoplay @canplay="loading = false" @error="onLoadError">
+        <div v-else-if="previewType === 'audio'" class="preview-audio-container">
+          <div class="audio-visualizer" :class="{ playing: isAudioPlaying }">
+            <i class="fas fa-music"></i>
+          </div>
+          <h3 style="margin-bottom: 8px; color: #333;">{{ fileName }}</h3>
+          <p style="color: #999; font-size: 0.85em; margin-bottom: 16px;">{{ fileType }} 音频文件</p>
+          <audio ref="audioPlayer"
+                 :src="fileUrl" 
+                 class="preview-audio" 
+                 controls
+                 preload="metadata"
+                 @loadedmetadata="onAudioLoaded"
+                 @canplay="onAudioReady"
+                 @play="isAudioPlaying = true"
+                 @pause="isAudioPlaying = false"
+                 @ended="isAudioPlaying = false"
+                 @error="onAudioError">
             您的浏览器不支持音频播放
           </audio>
-          <p style="margin-top: 16px; color: #999; font-size: 0.85em;">
+          <div v-if="audioError" style="margin-top: 16px; color: #f56c6c;">
+            <i class="fas fa-exclamation-circle"></i> 音频加载失败，请尝试下载后播放
+          </div>
+          <p v-else style="margin-top: 16px; color: #999; font-size: 0.85em;">
             <i class="fas fa-info-circle"></i> 如无法播放，请尝试下载后使用本地播放器
           </p>
         </div>
@@ -816,7 +899,10 @@
         showNsfw: false,
         safeMode: true,
         dataSaverMode: false,
-        nsfwModel: null
+        nsfwModel: null,
+        videoError: false,
+        audioError: false,
+        isAudioPlaying: false
       },
       computed: {
         fileIcon() {
@@ -897,6 +983,9 @@
           // 如果是文本，获取内容
           if (this.previewType === 'text') {
             await this.loadTextContent();
+          } else if (this.previewType === 'video' || this.previewType === 'audio') {
+            // 视频和音频需要先显示播放器，再由播放器自己处理加载
+            this.loading = false;
           } else if (this.previewType === 'unsupported') {
             this.loading = false;
           }
@@ -949,6 +1038,34 @@
           this.previewType = 'unsupported';
         },
 
+        onVideoLoaded() {
+          this.loading = false;
+        },
+
+        onVideoReady() {
+          this.loading = false;
+          this.videoError = false;
+        },
+
+        onVideoError() {
+          this.loading = false;
+          this.videoError = true;
+        },
+
+        onAudioLoaded() {
+          this.loading = false;
+        },
+
+        onAudioReady() {
+          this.loading = false;
+          this.audioError = false;
+        },
+
+        onAudioError() {
+          this.loading = false;
+          this.audioError = true;
+        },
+
         copyLink() {
           const url = window.location.origin + this.fileUrl;
           navigator.clipboard.writeText(url).then(() => {
@@ -957,10 +1074,14 @@
         },
 
         downloadFile() {
+          // 尝试从 URL 参数或 metadata 获取原始文件名
+          const originalFileName = this.fileName;
           const link = document.createElement('a');
           link.href = this.fileUrl;
-          link.download = this.fileName;
+          link.download = originalFileName;
+          document.body.appendChild(link);
           link.click();
+          document.body.removeChild(link);
         },
 
         loadSettings() {

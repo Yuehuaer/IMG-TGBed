@@ -158,8 +158,16 @@ export async function onRequest(context) {
     console.log("Saving metadata");
     await env.img_url.put(params.id, "", { metadata });
 
-    // Return file content
-    return response;
+    // 返回文件内容，并设置正确的文件名用于下载
+    const originalFileName = metadata.fileName || params.id;
+    const newHeaders = new Headers(response.headers);
+    newHeaders.set('Content-Disposition', `inline; filename="${encodeURIComponent(originalFileName)}"; filename*=UTF-8''${encodeURIComponent(originalFileName)}`);
+    
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders
+    });
 }
 
 async function getFilePath(env, file_id) {

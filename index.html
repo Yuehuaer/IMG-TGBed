@@ -622,11 +622,12 @@
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s ease;
+      background: #f5f5f5;
     }
 
     .history-item:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
     .history-item img {
@@ -634,6 +635,64 @@
       height: 100%;
       object-fit: cover;
     }
+
+    /* 非图片文件图标显示 */
+    .history-file-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 8px;
+    }
+
+    .history-file-icon i {
+      font-size: 2.2em;
+      margin-bottom: 6px;
+    }
+
+    .history-file-icon .file-ext {
+      font-size: 0.65em;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-file-icon.video-file {
+      background: linear-gradient(135deg, #fff0f6 0%, #f5e6eb 100%);
+    }
+    .history-file-icon.video-file i { color: #eb2f96; }
+
+    .history-file-icon.audio-file {
+      background: linear-gradient(135deg, #f0f5ff 0%, #e6ebf5 100%);
+    }
+    .history-file-icon.audio-file i { color: #2f54eb; }
+
+    .history-file-icon.document-file {
+      background: linear-gradient(135deg, #e6f7ff 0%, #d6e4ff 100%);
+    }
+    .history-file-icon.document-file i { color: #1890ff; }
+
+    .history-file-icon.archive-file {
+      background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
+    }
+    .history-file-icon.archive-file i { color: #fa8c16; }
+
+    .history-file-icon.code-file {
+      background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
+    }
+    .history-file-icon.code-file i { color: #52c41a; }
+
+    .history-file-icon.other-file {
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    }
+    .history-file-icon.other-file i { color: #8c8c8c; }
 
     .history-item-overlay {
       position: absolute;
@@ -1395,11 +1454,23 @@
              v-for="(item, index) in uploadHistory" 
              :key="index"
              :class="{ selected: item.selected }"
-             @click="toggleHistorySelect(index)">
-          <img :src="item.url" onerror="this.parentElement.style.background='#f0f0f0'">
+             @click="toggleHistorySelect(index)"
+             :title="item.fileName || item.name || ''">
+          <!-- 图片文件显示缩略图 -->
+          <img v-if="isImageFile(item.fileName || item.name || item.url)" 
+               :src="item.url" 
+               @error="handleHistoryImgError($event, item)">
+          <!-- 非图片文件显示图标 -->
+          <div v-else class="history-file-icon" :class="getFileIconClass(item.fileName || item.name || item.url)">
+            <i :class="getFileIcon(item.fileName || item.name || item.url)"></i>
+            <span class="file-ext">{{ getFileExt(item.fileName || item.name || item.url) }}</span>
+          </div>
           <div class="history-item-overlay">
             <button class="action-btn" @click.stop="copyLink(item)" style="background: rgba(255,255,255,0.2); color: white;">
               <i class="fas fa-copy"></i>
+            </button>
+            <button class="action-btn" @click.stop="openPreview(item)" style="background: rgba(255,255,255,0.2); color: white;">
+              <i class="fas fa-eye"></i>
             </button>
             <button class="action-btn delete" @click.stop="removeFromHistory(index)" style="background: rgba(245,108,108,0.8);">
               <i class="fas fa-trash"></i>
@@ -1741,7 +1812,8 @@
         // 处理上传成功
         handleUploadSuccess(item, src) {
           const uploadedFile = {
-            name: item.file.name,
+            name: item.file.name,          // 原始文件名
+            fileName: item.file.name,      // 保存原始文件名用于显示
             url: `${this.baseURL}${src}`,
             path: src,
             size: item.file.size,
@@ -1913,6 +1985,71 @@
         removeFromHistory(index) {
           this.uploadHistory.splice(index, 1);
           this.saveHistory();
+        },
+
+        // 文件类型判断方法
+        isImageFile(filename) {
+          if (!filename) return false;
+          const ext = this.getFileExt(filename).toLowerCase();
+          return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'ico'].includes(ext);
+        },
+
+        getFileExt(filename) {
+          if (!filename) return '';
+          const parts = filename.split('.');
+          return parts.length > 1 ? parts.pop() : '';
+        },
+
+        getFileIcon(filename) {
+          const ext = this.getFileExt(filename).toLowerCase();
+          const iconMap = {
+            // 视频
+            'mp4': 'fas fa-video', 'webm': 'fas fa-video', 'avi': 'fas fa-video',
+            'mov': 'fas fa-video', 'mkv': 'fas fa-video', 'flv': 'fas fa-video',
+            // 音频
+            'mp3': 'fas fa-music', 'wav': 'fas fa-music', 'ogg': 'fas fa-music',
+            'flac': 'fas fa-music', 'aac': 'fas fa-music', 'm4a': 'fas fa-music',
+            // 文档
+            'pdf': 'fas fa-file-pdf', 'doc': 'fas fa-file-word', 'docx': 'fas fa-file-word',
+            'xls': 'fas fa-file-excel', 'xlsx': 'fas fa-file-excel',
+            'ppt': 'fas fa-file-powerpoint', 'pptx': 'fas fa-file-powerpoint',
+            'txt': 'fas fa-file-alt', 'md': 'fas fa-file-alt',
+            // 压缩包
+            'zip': 'fas fa-file-archive', 'rar': 'fas fa-file-archive',
+            '7z': 'fas fa-file-archive', 'tar': 'fas fa-file-archive', 'gz': 'fas fa-file-archive',
+            // 代码
+            'js': 'fas fa-file-code', 'ts': 'fas fa-file-code', 'py': 'fas fa-file-code',
+            'java': 'fas fa-file-code', 'c': 'fas fa-file-code', 'cpp': 'fas fa-file-code',
+            'html': 'fas fa-file-code', 'css': 'fas fa-file-code', 'json': 'fas fa-file-code'
+          };
+          return iconMap[ext] || 'fas fa-file';
+        },
+
+        getFileIconClass(filename) {
+          const ext = this.getFileExt(filename).toLowerCase();
+          const videoExts = ['mp4', 'webm', 'avi', 'mov', 'mkv', 'flv'];
+          const audioExts = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
+          const docExts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'md'];
+          const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz'];
+          const codeExts = ['js', 'ts', 'py', 'java', 'c', 'cpp', 'html', 'css', 'json'];
+
+          if (videoExts.includes(ext)) return 'video-file';
+          if (audioExts.includes(ext)) return 'audio-file';
+          if (docExts.includes(ext)) return 'document-file';
+          if (archiveExts.includes(ext)) return 'archive-file';
+          if (codeExts.includes(ext)) return 'code-file';
+          return 'other-file';
+        },
+
+        handleHistoryImgError(event, item) {
+          // 图片加载失败时，将其标记为非图片，让Vue重新渲染为图标
+          item._imgError = true;
+          this.$forceUpdate();
+        },
+
+        openPreview(item) {
+          const fileId = item.url.replace('/file/', '');
+          window.open(`/preview.html?file=${encodeURIComponent(fileId)}`, '_blank');
         },
 
         clearHistory() {
