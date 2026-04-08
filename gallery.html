@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>图片浏览器 | Katelya-TGBed</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>图片浏览器 | K-Vault</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/theme.js?v=20260305"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.3/lib/theme-chalk/index.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
   <style>
@@ -94,7 +97,51 @@
       box-shadow: 0 0 0 3px rgba(138, 75, 255, 0.1);
     }
 
-    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .header-actions .gallery-theme-toggle {
+      margin-left: 2px;
+      border: 1.5px solid rgba(138, 75, 255, 0.25);
+      background: linear-gradient(
+        135deg,
+        rgba(138, 75, 255, 0.16),
+        rgba(200, 241, 255, 0.42)
+      );
+      color: #2f3243;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(138, 75, 255, 0.14);
+    }
+
+    .header-actions .gallery-theme-toggle i {
+      color: var(--primary);
+      width: 14px;
+      text-align: center;
+    }
+
+    .header-actions .gallery-theme-toggle:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    html[data-theme="dark"] .header-actions .gallery-theme-toggle {
+      border-color: rgba(154, 169, 255, 0.45);
+      background: linear-gradient(
+        135deg,
+        rgba(154, 169, 255, 0.2),
+        rgba(84, 106, 156, 0.35)
+      );
+      color: #e8eeff;
+    }
+
+    html[data-theme="dark"] .header-actions .gallery-theme-toggle i {
+      color: #c4d4ff;
+    }
 
     .nav-btn {
       padding: 8px 16px;
@@ -518,6 +565,10 @@
         flex-wrap: wrap;
         gap: 8px;
       }
+
+      .header-actions .gallery-theme-toggle {
+        order: 4;
+      }
       
       .nav-btn {
         padding: 8px 14px;
@@ -627,6 +678,16 @@
       
       .header-actions {
         gap: 6px;
+      }
+
+      .header-actions .gallery-theme-toggle {
+        padding: 6px 9px;
+        min-width: 38px;
+        justify-content: center;
+      }
+
+      .header-actions .gallery-theme-toggle [data-theme-label] {
+        display: none;
       }
       
       .nav-btn {
@@ -754,9 +815,10 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="/mobile-refactor.css">
 </head>
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <!-- 头部 -->
     <div class="header">
       <div class="header-title">
@@ -770,6 +832,10 @@
         <a href="./" class="nav-btn"><i class="fas fa-cloud-upload-alt"></i> 上传</a>
         <a href="./admin.html" class="nav-btn"><i class="fas fa-th-large"></i> 管理</a>
         <a href="./" class="nav-btn"><i class="fas fa-home"></i> 首页</a>
+        <button type="button" class="nav-btn gallery-theme-toggle" data-theme-toggle aria-label="切换主题">
+          <i class="fas fa-moon" data-theme-icon></i>
+          <span data-theme-label>夜间</span>
+        </button>
       </div>
     </div>
 

@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Katelya-TGBed | 免费文件托管服务</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>K-Vault | 免费文件托管服务</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/theme.js?v=20260305"></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/element-ui@2.15.3/lib/theme-chalk/index.css"
@@ -14,7 +17,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"
     />
-    <style>
+<style>
       :root {
         --primary-color: #8a4bff;
         --primary-light: #b39ddb;
@@ -28,8 +31,122 @@
         --card-bg: rgba(255, 255, 255, 0.92);
         --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         --shadow-hover: 0 8px 24px rgba(138, 75, 255, 0.15);
+        --text-primary: #2f3243;
+        --text-secondary: #555d72;
+        --text-muted: #8b93aa;
+        --surface-1: #ffffff;
+        --surface-2: rgba(255, 255, 255, 0.82);
+        --surface-3: #f0f3fa;
+        --surface-border: rgba(255, 255, 255, 0.55);
+        --input-border: #e8eaf2;
+        --warning-text-color: #b88230;
         --border-radius: 16px;
         --transition: all 0.2s ease;
+      }
+
+      html[data-theme="dark"] {
+        --primary-color: #9aa9ff;
+        --primary-light: #b5bdf8;
+        --primary-dark: #768cff;
+        --bg-gradient: linear-gradient(
+          140deg,
+          #111a2d 0%,
+          #0b1120 55%,
+          #070b16 100%
+        );
+        --card-bg: rgba(15, 23, 39, 0.9);
+        --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+        --shadow-hover: 0 14px 32px rgba(0, 0, 0, 0.45);
+        --text-primary: #e8eeff;
+        --text-secondary: #c4cde3;
+        --text-muted: #90a0bf;
+        --surface-1: #141d31;
+        --surface-2: rgba(20, 29, 49, 0.82);
+        --surface-3: #1b2740;
+        --surface-border: rgba(130, 152, 196, 0.32);
+        --input-border: rgba(130, 152, 196, 0.45);
+        --warning-text-color: #e8be73;
+      }
+
+      html[data-theme="dark"] .upload-zone {
+        border-color: rgba(181, 189, 248, 0.45);
+        background: linear-gradient(
+          135deg,
+          rgba(154, 169, 255, 0.1) 0%,
+          rgba(84, 106, 156, 0.16) 100%
+        );
+      }
+
+      html[data-theme="dark"] .upload-zone::before {
+        background: linear-gradient(
+          135deg,
+          rgba(154, 169, 255, 0.18) 0%,
+          rgba(84, 106, 156, 0.22) 100%
+        );
+      }
+
+      html[data-theme="dark"] .storage-switcher {
+        background: linear-gradient(
+          135deg,
+          rgba(20, 29, 49, 0.9) 0%,
+          rgba(25, 35, 58, 0.85) 100%
+        );
+        border-color: rgba(154, 169, 255, 0.25);
+      }
+
+      html[data-theme="dark"] .storage-btn:hover:not(.disabled),
+      html[data-theme="dark"] .method-btn:hover {
+        background: rgba(154, 169, 255, 0.14);
+      }
+
+      html[data-theme="dark"] .storage-target,
+      html[data-theme="dark"] .stats-bar {
+        background: linear-gradient(
+          135deg,
+          rgba(154, 169, 255, 0.2) 0%,
+          rgba(84, 106, 156, 0.2) 100%
+        );
+      }
+
+      html[data-theme="dark"] .history-file-icon {
+        background: linear-gradient(135deg, #24324f 0%, #1b2840 100%);
+      }
+
+      html[data-theme="dark"] .history-file-icon.video-file {
+        background: linear-gradient(135deg, #412546 0%, #32223a 100%);
+      }
+
+      html[data-theme="dark"] .history-file-icon.audio-file {
+        background: linear-gradient(135deg, #27335b 0%, #202b4a 100%);
+      }
+
+      html[data-theme="dark"] .history-file-icon.document-file {
+        background: linear-gradient(135deg, #21405a 0%, #1b344b 100%);
+      }
+
+      html[data-theme="dark"] .history-file-icon.archive-file {
+        background: linear-gradient(135deg, #5b4125 0%, #4d331d 100%);
+      }
+
+      html[data-theme="dark"] .history-file-icon.code-file {
+        background: linear-gradient(135deg, #234c37 0%, #1f3e2f 100%);
+      }
+
+      html[data-theme="dark"] .history-file-icon.other-file {
+        background: linear-gradient(135deg, #2b3649 0%, #222c3d 100%);
+      }
+
+      html[data-theme="dark"] .result-item.selected {
+        background: rgba(154, 169, 255, 0.2);
+      }
+
+      html[data-theme="dark"] .toast {
+        border: 1px solid var(--surface-border);
+      }
+
+      html[data-theme="dark"] .url-input-container input::placeholder,
+      html[data-theme="dark"] .batch-links::placeholder {
+        color: var(--text-muted);
       }
 
       * {
@@ -45,7 +162,7 @@
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC",
           sans-serif;
-        color: #333;
+        color: var(--text-primary);
       }
 
       /* 页面加载动画 */
@@ -82,7 +199,7 @@
         border-radius: var(--border-radius);
         margin-bottom: 24px;
         box-shadow: var(--shadow);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--surface-border);
         position: sticky;
         top: 20px;
         z-index: 100;
@@ -92,7 +209,7 @@
       .header-title {
         font-size: 1.5em;
         font-weight: 700;
-        color: #333;
+        color: var(--text-primary);
         display: flex;
         align-items: center;
         gap: 12px;
@@ -104,9 +221,13 @@
         transform: scale(1.02);
       }
 
-      .header-title i {
-        color: var(--primary-color);
-        font-size: 1.1em;
+      .header-title .brand-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(138, 75, 255, 0.2);
+        background: rgba(255, 255, 255, 0.92);
       }
 
       .nav-links {
@@ -119,7 +240,7 @@
         padding: 10px 18px;
         border-radius: 10px;
         text-decoration: none;
-        color: #555;
+        color: var(--text-secondary);
         transition: var(--transition);
         font-size: 0.9em;
         font-weight: 500;
@@ -149,6 +270,55 @@
         transform: translateY(-2px);
       }
 
+      .nav-links .theme-toggle-btn,
+      .header-theme-toggle {
+        border: 1.5px solid rgba(138, 75, 255, 0.25);
+        background: linear-gradient(
+          135deg,
+          rgba(138, 75, 255, 0.16),
+          rgba(200, 241, 255, 0.42)
+        );
+        color: var(--text-primary);
+        padding: 10px 14px;
+        border-radius: 11px;
+        font-size: 0.88em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .header-theme-toggle {
+        margin-left: auto;
+        margin-right: 8px;
+      }
+
+      .nav-links .theme-toggle-btn i,
+      .header-theme-toggle i {
+        color: var(--primary-color);
+        width: 14px;
+        text-align: center;
+      }
+
+      .nav-links .theme-toggle-btn:hover,
+      .header-theme-toggle:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary-color);
+        box-shadow: 0 8px 20px rgba(138, 75, 255, 0.2);
+      }
+
+      html[data-theme="dark"] .nav-links .theme-toggle-btn,
+      html[data-theme="dark"] .header-theme-toggle {
+        background: linear-gradient(
+          135deg,
+          rgba(154, 169, 255, 0.2),
+          rgba(84, 106, 156, 0.35)
+        );
+        border-color: rgba(154, 169, 255, 0.45);
+      }
+
       /* 主容器 */
       .main-container {
         display: grid;
@@ -170,7 +340,7 @@
         border-radius: var(--border-radius);
         padding: 28px;
         box-shadow: var(--shadow);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--surface-border);
         transition: var(--transition);
       }
 
@@ -190,7 +360,7 @@
       .card-title {
         font-size: 1.25em;
         font-weight: 600;
-        color: #333;
+        color: var(--text-primary);
         display: flex;
         align-items: center;
         gap: 10px;
@@ -266,7 +436,7 @@
 
       .upload-text {
         font-size: 1.2em;
-        color: #555;
+        color: var(--text-secondary);
         margin-bottom: 10px;
         font-weight: 500;
         position: relative;
@@ -275,7 +445,7 @@
 
       .upload-hint {
         font-size: 0.9em;
-        color: #888;
+        color: var(--text-muted);
         position: relative;
         z-index: 1;
       }
@@ -320,7 +490,7 @@
 
       .storage-label {
         font-size: 0.9em;
-        color: #666;
+        color: var(--text-secondary);
         font-weight: 500;
       }
 
@@ -334,13 +504,13 @@
         align-items: center;
         gap: 8px;
         padding: 10px 20px;
-        border: 2px solid #e0e0e0;
+        border: 2px solid var(--input-border);
         border-radius: 12px;
-        background: white;
+        background: var(--surface-1);
         cursor: pointer;
         transition: all 0.3s;
         font-size: 0.9em;
-        color: #666;
+        color: var(--text-secondary);
       }
 
       .storage-btn:hover:not(.disabled) {
@@ -389,7 +559,7 @@
         padding: 14px 24px;
         border: 2px solid var(--primary-light);
         border-radius: 14px;
-        background: white;
+        background: var(--surface-1);
         cursor: pointer;
         transition: var(--transition);
         display: flex;
@@ -397,7 +567,7 @@
         gap: 10px;
         font-size: 0.95em;
         font-weight: 500;
-        color: #555;
+        color: var(--text-secondary);
       }
 
       .method-btn:hover {
@@ -429,7 +599,7 @@
         align-items: center;
         gap: 12px;
         padding: 12px;
-        background: rgba(255, 255, 255, 0.8);
+        background: var(--surface-2);
         border-radius: 12px;
         margin-bottom: 10px;
       }
@@ -439,7 +609,7 @@
         height: 60px;
         border-radius: 8px;
         object-fit: cover;
-        background: #f0f0f0;
+        background: var(--surface-3);
       }
 
       .upload-item-info {
@@ -449,7 +619,7 @@
 
       .upload-item-name {
         font-size: 0.95em;
-        color: #333;
+        color: var(--text-primary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -457,7 +627,7 @@
 
       .upload-item-size {
         font-size: 0.8em;
-        color: #999;
+        color: var(--text-muted);
         margin-top: 4px;
       }
 
@@ -511,7 +681,7 @@
         align-items: center;
         gap: 12px;
         padding: 12px;
-        background: rgba(255, 255, 255, 0.8);
+        background: var(--surface-2);
         border-radius: 12px;
         margin-bottom: 10px;
         transition: all 0.3s;
@@ -519,7 +689,7 @@
       }
 
       .result-item:hover {
-        background: rgba(255, 255, 255, 1);
+        background: var(--surface-1);
         transform: translateX(4px);
       }
 
@@ -541,7 +711,7 @@
         min-width: 50px; /* 防止收缩 */
         border-radius: 8px;
         object-fit: cover;
-        background: #f0f0f0;
+        background: var(--surface-3);
         cursor: pointer;
         flex-shrink: 0; /* 防止收缩 */
       }
@@ -554,7 +724,7 @@
 
       .result-item-name {
         font-size: 0.9em;
-        color: #333;
+        color: var(--text-primary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -618,12 +788,13 @@
 
       .format-tab {
         padding: 8px 16px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--input-border);
         border-radius: 8px;
         cursor: pointer;
         font-size: 0.85em;
         transition: all 0.3s;
-        background: white;
+        background: var(--surface-1);
+        color: var(--text-secondary);
       }
 
       .format-tab:hover {
@@ -641,8 +812,10 @@
         width: 100%;
         min-height: 120px;
         padding: 12px;
-        border: 2px solid #eee;
+        border: 2px solid var(--input-border);
         border-radius: 12px;
+        background: var(--surface-1);
+        color: var(--text-primary);
         font-family: "Consolas", monospace;
         font-size: 0.85em;
         resize: vertical;
@@ -673,7 +846,7 @@
         overflow: hidden;
         cursor: pointer;
         transition: all 0.2s ease;
-        background: #f5f5f5;
+        background: var(--surface-3);
       }
 
       .history-item:hover {
@@ -706,7 +879,7 @@
       .history-file-icon .file-ext {
         font-size: 0.65em;
         font-weight: 600;
-        color: #666;
+        color: var(--text-secondary);
         text-transform: uppercase;
         max-width: 100%;
         overflow: hidden;
@@ -894,13 +1067,13 @@
       .empty-state {
         text-align: center;
         padding: 40px;
-        color: #999;
+        color: var(--text-muted);
       }
 
       .empty-state i {
         font-size: 3em;
         margin-bottom: 16px;
-        color: #ddd;
+        color: var(--text-muted);
       }
 
       /* 统计条 */
@@ -922,7 +1095,7 @@
         align-items: center;
         gap: 8px;
         font-size: 0.9em;
-        color: #666;
+        color: var(--text-secondary);
       }
 
       .stat-item i {
@@ -944,9 +1117,11 @@
       .url-input-container input {
         flex: 1;
         padding: 12px 16px;
-        border: 2px solid #eee;
+        border: 2px solid var(--input-border);
         border-radius: 12px;
         font-size: 1em;
+        background: var(--surface-1);
+        color: var(--text-primary);
       }
 
       .url-input-container input:focus {
@@ -999,7 +1174,7 @@
 
       .toast {
         padding: 12px 20px;
-        background: white;
+        background: var(--surface-1);
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         margin-bottom: 10px;
@@ -1068,6 +1243,22 @@
           padding: 8px 14px;
           font-size: 0.85em;
           gap: 6px;
+        }
+
+        .nav-links .theme-toggle-btn {
+          padding: 8px 12px;
+          font-size: 0.85em;
+        }
+
+        .header-theme-toggle {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          min-height: 36px;
+          padding: 8px 12px;
+          font-size: 0.85em;
+          border-radius: 999px;
+          z-index: 3;
         }
 
         .card {
@@ -1168,6 +1359,22 @@
           font-size: 0.78em;
           border-radius: 8px;
           gap: 4px;
+        }
+
+        .nav-links .theme-toggle-btn {
+          padding: 6px 10px;
+          font-size: 0.78em;
+          border-radius: 8px;
+          gap: 6px;
+        }
+
+        .header-theme-toggle {
+          top: 8px;
+          right: 8px;
+          min-height: 34px;
+          padding: 6px 10px;
+          font-size: 0.78em;
+          gap: 6px;
         }
 
         .nav-links a i {
@@ -1324,13 +1531,13 @@
         .header {
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
-          background: rgba(255, 255, 255, 0.98);
+          background: var(--card-bg);
         }
 
         .card {
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
-          background: rgba(255, 255, 255, 0.98);
+          background: var(--card-bg);
         }
       }
 
@@ -1350,7 +1557,7 @@
         border-radius: var(--border-radius);
         margin-bottom: 20px;
         font-size: 0.9em;
-        color: #b88230;
+        color: var(--warning-text-color);
         font-weight: 500;
       }
 
@@ -1370,15 +1577,26 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="/mobile-refactor.css">
   </head>
   <body>
-    <div id="app">
+    <div id="app" v-cloak>
       <!-- 头部导航 -->
       <div class="header">
         <div class="header-title">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <span>Katelya-TGBed</span>
+          <img
+            src="/logo.png"
+            alt="K-Vault Logo"
+            class="brand-logo"
+            loading="eager"
+            onerror="this.onerror=null;this.src='/favicon.ico';"
+          />
+          <span>K-Vault</span>
         </div>
+        <button type="button" class="theme-toggle-btn header-theme-toggle" data-theme-toggle aria-label="切换主题">
+          <i class="fas fa-moon" data-theme-icon></i>
+          <span data-theme-label>夜间</span>
+        </button>
         <div class="nav-links">
           <a href="./"><i class="fas fa-home"></i> 首页</a>
           <a href="./gallery.html" v-if="!isGuest"
@@ -1386,6 +1604,9 @@
           >
           <a href="./admin.html" v-if="!isGuest"
             ><i class="fas fa-cog"></i> 管理后台</a
+          >
+          <a href="./webdav.html" v-if="!isGuest"
+            ><i class="fas fa-hard-drive"></i> WebDAV</a
           >
           <a
             href="javascript:void(0)"
@@ -1399,7 +1620,7 @@
       </div>
 
       <!-- 访客模式提示条 -->
-      <div class="guest-notice" v-if="isGuest && guestUploadConfig">
+      <div class="guest-notice" v-if="!authChecking && isGuest && guestUploadConfig">
         <i class="fas fa-user-clock"></i>
         <span
           >访客模式 - 单文件最大 {{ formatSize(guestUploadConfig.maxFileSize)
@@ -1417,12 +1638,12 @@
               <span>上传文件</span>
             </div>
             <span
-              v-if="isGuest && guestUploadConfig"
-              style="color: #b88230; font-size: 0.85em"
+              v-if="!authChecking && isGuest && guestUploadConfig"
+              style="color: var(--warning-text-color); font-size: 0.85em"
               >访客模式 - 单文件最大 {{
               formatSize(guestUploadConfig.maxFileSize) }}</span
             >
-            <span v-else style="color: #999; font-size: 0.85em"
+            <span v-else style="color: var(--text-muted); font-size: 0.85em"
               >支持批量上传，最大 100MB/个（分片上传）</span
             >
           </div>
@@ -1438,7 +1659,7 @@
           >
             <i class="fas fa-cloud-upload-alt upload-icon"></i>
             <div class="upload-text">点击或拖拽文件到此区域上传</div>
-            <div class="upload-hint" v-if="isGuest && guestUploadConfig">
+            <div class="upload-hint" v-if="!authChecking && isGuest && guestUploadConfig">
               访客模式：单文件最大 {{ formatSize(guestUploadConfig.maxFileSize)
               }}，不支持分片上传
             </div>
@@ -1509,6 +1730,17 @@
               >
                 <i class="fas fa-robot"></i>
                 <span>HuggingFace</span>
+              </button>
+              <button
+                class="storage-btn"
+                v-if="!isGuest"
+                :class="{ active: storageMode === 'github', disabled: !githubAvailable }"
+                @click="setStorageMode('github')"
+                :disabled="!githubAvailable"
+                :title="!githubAvailable ? '未配置 - 请在环境变量中配置 GitHub 相关参数' : 'GitHub 存储'"
+              >
+                <i class="fab fa-github"></i>
+                <span>GitHub</span>
               </button>
             </div>
           </div>
@@ -1602,7 +1834,7 @@
               >
                 <i
                   :class="getFileIcon(file.name)"
-                  style="font-size: 1.5em; color: #999"
+                  style="font-size: 1.5em; color: var(--text-muted)"
                 ></i>
               </div>
               <div class="upload-item-info">
@@ -1650,7 +1882,7 @@
               <span>上传结果</span>
               <span
                 v-if="uploadedFiles.length > 0"
-                style="font-size: 0.8em; color: #999; margin-left: 8px"
+                style="font-size: 0.8em; color: var(--text-muted); margin-left: 8px"
               >
                 ({{ uploadedFiles.length }}个文件)
               </span>
@@ -1799,7 +2031,7 @@
           <div class="card-title">
             <i class="fas fa-history"></i>
             <span>本地上传历史</span>
-            <span style="font-size: 0.8em; color: #999; margin-left: 8px"
+            <span style="font-size: 0.8em; color: var(--text-muted); margin-left: 8px"
               >({{ uploadHistory.length }})</span
             >
           </div>
@@ -1989,12 +2221,14 @@
           previewData: null, // 新的预览数据对象
           toasts: [],
           isAuthenticated: false,
-          storageMode: "telegram", // 存储模式：telegram, r2, s3, discord, huggingface
+          storageMode: "telegram", // 存储模式：telegram, r2, s3, discord, huggingface, github
           storageTarget: "Telegram 频道", // 显示文本
           r2Available: false, // R2 是否可用
           s3Available: false, // S3 是否可用
           discordAvailable: false, // Discord 是否可用
-          huggingfaceAvailable: false, // HuggingFace 是否可用
+          huggingfaceAvailable: false,
+          githubAvailable: false,
+          authChecking: true, // 是否正在检查认证状态
           isGuest: false, // 是否为访客模式
           guestUploadConfig: null, // 访客上传配置 { maxFileSize, maxDailyUploads }
           uploadConfig: {
@@ -2304,7 +2538,10 @@
             const data = await response.json();
 
             if (!response.ok || (Array.isArray(data) && data[0]?.error)) {
-              throw new Error(data[0]?.error || "上传失败");
+              const serverError = Array.isArray(data)
+                ? data[0]?.error
+                : data?.error;
+              throw new Error(serverError || "上传失败");
             }
 
             const src = data[0]?.src;
@@ -3115,37 +3352,42 @@
 
           // 检查认证状态
           async checkAuth() {
+            this.authChecking = true;
             try {
               const response = await fetch("/api/auth/check", {
                 credentials: "include",
               });
               const data = await response.json();
 
-              // 如果需要认证但未认证
               if (data.authRequired && !data.authenticated) {
-                // 检查是否允许访客上传
+                this.isAuthenticated = false;
                 if (data.guestUpload && data.guestUpload.enabled) {
                   this.isGuest = true;
                   this.guestUploadConfig = {
-                    maxFileSize:
-                      data.guestUpload.maxFileSize || 5 * 1024 * 1024, // 默认 5MB
-                    maxDailyUploads: data.guestUpload.dailyLimit || 10, // 默认 10 次
+                    maxFileSize: data.guestUpload.maxFileSize || 5 * 1024 * 1024,
+                    maxDailyUploads: data.guestUpload.dailyLimit || 10,
                   };
-                  // 访客强制使用 telegram 模式
                   this.storageMode = "telegram";
                   this.storageTarget = "Telegram 频道";
-                  return;
+                  return true;
                 }
-                // 没有访客上传权限，跳转登录
                 window.location.href =
                   "/login.html?redirect=" +
                   encodeURIComponent(window.location.pathname);
-                return;
+                return false;
               }
 
+              this.isGuest = false;
+              this.guestUploadConfig = null;
               this.isAuthenticated = data.authRequired && data.authenticated;
+              return true;
             } catch (e) {
               console.error("Auth check failed:", e);
+              this.isGuest = false;
+              this.guestUploadConfig = null;
+              return true;
+            } finally {
+              this.authChecking = false;
             }
           },
 
@@ -3166,6 +3408,9 @@
               this.huggingfaceAvailable = !!(
                 status.huggingface?.connected && status.huggingface?.enabled
               );
+              this.githubAvailable = !!(
+                status.github?.connected && status.github?.enabled
+              );
 
               // 恢复用户上次保存的存储模式
               const savedMode = localStorage.getItem("storageMode");
@@ -3174,6 +3419,7 @@
                 s3: this.s3Available,
                 discord: this.discordAvailable,
                 huggingface: this.huggingfaceAvailable,
+                github: this.githubAvailable,
               };
               const modeLabels = {
                 telegram: "Telegram 频道",
@@ -3181,6 +3427,7 @@
                 s3: "S3 存储",
                 discord: "Discord 频道",
                 huggingface: "HuggingFace 仓库",
+                github: "GitHub 仓库",
               };
 
               // 如果保存的模式可用（且非访客模式或是 telegram/r2），恢复之
@@ -3209,6 +3456,7 @@
               this.s3Available = false;
               this.discordAvailable = false;
               this.huggingfaceAvailable = false;
+              this.githubAvailable = false;
             }
           },
 
@@ -3226,10 +3474,15 @@
                 label: "HuggingFace 仓库",
                 available: this.huggingfaceAvailable,
               },
+              github: {
+                label: "GitHub 仓库",
+                available: this.githubAvailable,
+              },
             };
 
             const config = modeConfig[mode];
             if (!config) return;
+            if (this.authChecking) return;
 
             // 访客只允许 telegram 和 r2
             if (this.isGuest && !["telegram", "r2"].includes(mode)) {
@@ -3248,12 +3501,14 @@
             this.showToast(`已切换到 ${config.label}`, "success");
           },
         },
-        mounted() {
+        async mounted() {
+
           // 检查认证状态（优先执行）
-          this.checkAuth();
+          const shouldContinue = await this.checkAuth();
+          if (!shouldContinue) return;
 
           // 检查存储目标
-          this.checkStorageTarget();
+          await this.checkStorageTarget();
 
           // 加载历史记录
           this.loadHistory();

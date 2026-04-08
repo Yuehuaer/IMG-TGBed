@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>登录 | Katelya-TGBed</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>登录 | K-Vault</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/theme.js?v=20260305"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
   <style>
     :root {
@@ -136,7 +139,7 @@
     }
 
     .form-input.has-toggle {
-      padding-right: 48px;
+      padding-right: 56px;
     }
 
     .form-input:focus {
@@ -151,14 +154,21 @@
 
     .password-toggle {
       position: absolute;
-      right: 32px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       background: none;
       border: none;
+      border-radius: 8px;
       color: #999;
       cursor: pointer;
-      padding: 4px;
+      padding: 0;
+      z-index: 2;
     }
 
     .password-toggle:hover {
@@ -321,12 +331,14 @@
         font-size: 1em;
       }
 
-      .password-wrapper .form-input {
-        padding-right: 50px;
+      .form-input.has-toggle {
+        padding-right: 52px;
       }
 
-      .toggle-password {
-        width: 42px;
+      .password-toggle {
+        right: 9px;
+        width: 32px;
+        height: 32px;
       }
 
       .submit-btn {
@@ -382,13 +394,15 @@
         border-radius: 10px;
       }
 
-      .password-wrapper .form-input {
-        padding-right: 44px;
+      .form-input.has-toggle {
+        padding-right: 48px;
       }
 
-      .toggle-password {
-        width: 38px;
-        font-size: 0.95em;
+      .password-toggle {
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        font-size: 0.9em;
       }
 
       .submit-btn {
@@ -451,28 +465,10 @@
     }
 
     /* 深色模式支持 */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --card-bg: rgba(30, 30, 40, 0.95);
-      }
-      
-      body {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      }
-      
-      .title { color: #fff; }
-      .subtitle { color: #aaa; }
-      .form-group label { color: #bbb; }
-      .form-input { 
-        background: #2a2a3e; 
-        border-color: #3a3a4e; 
-        color: #fff;
-      }
-      .form-input::placeholder { color: #666; }
-    }
   </style>
+  <link rel="stylesheet" href="/mobile-refactor.css">
 </head>
-<body>
+<body class="login-page">
   <!-- 背景图层 (通过JS动态控制) -->
   <div class="bg-image-layer" id="bgImageLayer" style="display: none;"></div>
   <div class="bg-overlay" id="bgOverlay" style="display: none;"></div>
@@ -482,7 +478,7 @@
       <div class="logo">
         <i class="fas fa-cloud-upload-alt"></i>
       </div>
-      <h1 class="title">Katelya-TGBed</h1>
+      <h1 class="title">K-Vault</h1>
       <p class="subtitle">请登录以继续使用文件托管服务</p>
 
       <div class="error-message" id="errorMessage">
@@ -524,7 +520,7 @@
       </form>
 
       <p class="footer-text">
-        Powered by <a href="https://github.com/katelya77/Katelya-TGBed" target="_blank">Katelya-TGBed</a>
+        Powered by <a href="https://github.com/katelya77/K-Vault" target="_blank">K-Vault</a>
       </p>
     </div>
   </div>
@@ -532,6 +528,16 @@
   <script>
     // 加载自定义背景
     (function() {
+      if (
+        window.UIDesignManager &&
+        typeof window.UIDesignManager.syncFromServer === 'function'
+      ) {
+        window.UIDesignManager.syncFromServer({
+          silent: true,
+          applyLocalOnFailure: true
+        });
+        return;
+      }
       const bgMode = localStorage.getItem('loginBackgroundMode') || 'gradient';
       const bgUrl = localStorage.getItem('loginBackgroundUrl') || '';
       const bgLayer = document.getElementById('bgImageLayer');
